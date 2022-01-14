@@ -1,0 +1,812 @@
+From: <Saved by Blink>
+Snapshot-Content-Location: https://wrprod01-prod-useast1.mathworks.com/static/IwTq6Wf8/MATLAB%20Drive/html/Colletti_proj_1b.html
+Subject: Colletti_proj_1b
+Date: Sat, 9 Oct 2021 02:02:24 -0000
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----MultipartBoundary--TJEpq3Y6U5TemU8YoZlTLUSNw5xZgQhdAfbFyQNK5S----"
+
+
+------MultipartBoundary--TJEpq3Y6U5TemU8YoZlTLUSNw5xZgQhdAfbFyQNK5S----
+Content-Type: text/html
+Content-ID: <frame-FE019BECD853223A3890D9FDD8492397@mhtml.blink>
+Content-Transfer-Encoding: quoted-printable
+Content-Location: https://wrprod01-prod-useast1.mathworks.com/static/IwTq6Wf8/MATLAB%20Drive/html/Colletti_proj_1b.html
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head>=
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8"><l=
+ink rel=3D"stylesheet" type=3D"text/css" href=3D"cid:css-fb08ba27-123a-42bb=
+-a9b6-7b7936135edc@mhtml.blink" />
+     =20
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Colletti_proj_1b</title><meta name=3D"generator" content=3D=
+"MATLAB 9.11"><link rel=3D"schema.DC" href=3D"http://purl.org/dc/elements/1=
+.1/"><meta name=3D"DC.date" content=3D"2021-10-09"><meta name=3D"DC.source"=
+ content=3D"Colletti_proj_1b.m"></head><body><div class=3D"content"><pre cl=
+ass=3D"codeinput"><span class=3D"comment">% Gabriella Colletti</span>
+<span class=3D"comment">% Project 1 Part B</span>
+
+<span class=3D"comment">%=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D%</span>
+clear;close <span class=3D"string">all</span>
+
+<span class=3D"comment">% Importing Flight Log CSV</span>
+data =3D readtable(<span class=3D"string">'output.csv'</span>, VariableNami=
+ngRule=3D<span class=3D"string">'preserve'</span>);
+column_names =3D data.Properties.VariableNames;
+
+<span class=3D"comment">% Number of Columns and Row</span>
+[rows, cols] =3D size(data);
+fprintf(<span class=3D"string">'Number of Rows: %d\n'</span>, rows);
+fprintf(<span class=3D"string">'Number of Columns: %d\n'</span>, cols);
+
+<span class=3D"comment">% Data Before NAN Value Imputation</span>
+fprintf(<span class=3D"string">'Data Before Imputing Null Values\n'</span>)
+display(data(1:5,:));
+
+<span class=3D"comment">% Impute NAN values</span>
+addpath(<span class=3D"string">'/MATLAB Drive/'</span>)
+matrix =3D table2array(data);
+new_matrix =3D inpaint_nans(matrix, 1);
+data =3D array2table(new_matrix,  VariableNames=3D column_names);
+
+<span class=3D"comment">% Data After NAN Value Imputation</span>
+fprintf(<span class=3D"string">'Data After Imputing Null Values But Before =
+Normalizing\n'</span>)
+display(data(1:5,:));
+
+<span class=3D"comment">% Normalize Feature Ranges between 0 and 1</span>
+matrix =3D table2array(data);
+new_matrix =3D normalize(matrix, <span class=3D"string">'range'</span>);
+data =3D array2table(new_matrix,  VariableNames=3D column_names);
+
+<span class=3D"comment">% Data After Normalization</span>
+fprintf(<span class=3D"string">'Data After Normalization\n'</span>)
+display(data(1:5,:));
+
+<span class=3D"comment">% Verify Constant Timestamp</span>
+timestamp_column =3D data(:, <span class=3D"string">'timestamp'</span>);
+timestamp_vector =3D table2array(timestamp_column);
+plot_delta(timestamp_vector);
+
+
+
+<span class=3D"comment">%---------- PLOT TIMESTAMP DELTA ------------------=
+----------%</span>
+<span class=3D"keyword">function</span> timestamp =3D plot_delta(timestamp)
+<span class=3D"comment">%timestamp is the 1D vector of timestamps</span>
+deltas =3D [];
+<span class=3D"keyword">for</span> i=3D300:size(timestamp)-1
+    deltas =3D [deltas  timestamp(i+1) - timestamp(i)];
+<span class=3D"keyword">end</span>
+figure
+x =3D 300:size(timestamp)-1;
+plot(x,deltas)
+xlabel(<span class=3D"string">'Timestamp Index'</span>)
+ylabel(<span class=3D"string">'Delta Timestamp'</span>)
+title(<span class=3D"string">'Comparison of Timestamp Deltas'</span>)
+<span class=3D"keyword">end</span>
+</pre><pre class=3D"codeoutput">Number of Rows: 17243
+Number of Columns: 34
+Data Before Imputing Null Values
+  5=C3=9734 table
+
+    timestamp     ATTITUDE.time_boot_ms    ATTITUDE.roll    ATTITUDE.pitch =
+   ATTITUDE.yaw    ATTITUDE.rollspeed    ATTITUDE.pitchspeed    ATTITUDE.ya=
+wspeed    SERVO_OUTPUT_RAW.time_usec    SERVO_OUTPUT_RAW.port    SERVO_OUTP=
+UT_RAW.servo1_raw    SERVO_OUTPUT_RAW.servo2_raw    SERVO_OUTPUT_RAW.servo3=
+_raw    SERVO_OUTPUT_RAW.servo4_raw    SERVO_OUTPUT_RAW.servo5_raw    SERVO=
+_OUTPUT_RAW.servo6_raw    SERVO_OUTPUT_RAW.servo7_raw    SERVO_OUTPUT_RAW.s=
+ervo8_raw    SERVO_OUTPUT_RAW.servo9_raw    SERVO_OUTPUT_RAW.servo10_raw   =
+ SERVO_OUTPUT_RAW.servo11_raw    SERVO_OUTPUT_RAW.servo12_raw    SERVO_OUTP=
+UT_RAW.servo13_raw    SERVO_OUTPUT_RAW.servo14_raw    SERVO_OUTPUT_RAW.serv=
+o15_raw    SERVO_OUTPUT_RAW.servo16_raw    NAV_CONTROLLER_OUTPUT.nav_roll  =
+  NAV_CONTROLLER_OUTPUT.nav_pitch    NAV_CONTROLLER_OUTPUT.nav_bearing    N=
+AV_CONTROLLER_OUTPUT.target_bearing    NAV_CONTROLLER_OUTPUT.wp_dist    NAV=
+_CONTROLLER_OUTPUT.alt_error    NAV_CONTROLLER_OUTPUT.aspd_error    NAV_CON=
+TROLLER_OUTPUT.xtrack_error
+    __________    _____________________    _____________    ______________ =
+   ____________    __________________    ___________________    ___________=
+______    __________________________    _____________________    __________=
+_________________    ___________________________    _______________________=
+____    ___________________________    ___________________________    _____=
+______________________    ___________________________    __________________=
+_________    ___________________________    ____________________________   =
+ ____________________________    ____________________________    __________=
+__________________    ____________________________    _____________________=
+_______    ____________________________    ______________________________  =
+  _______________________________    _________________________________    _=
+___________________________________    _____________________________    ___=
+____________________________    ________________________________    _______=
+___________________________
+
+    1.6332e+09             NaN                  NaN              NaN       =
+       NaN                NaN                    NaN                   NaN =
+                  2.0075e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                               NaN                =
+                NaN                                 NaN                    =
+               NaN                                  NaN                    =
+           NaN                                NaN                          =
+        NaN               =20
+    1.6332e+09             NaN                  NaN              NaN       =
+       NaN                NaN                    NaN                   NaN =
+                  2.2158e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                               NaN                =
+                NaN                                 NaN                    =
+               NaN                                  NaN                    =
+           NaN                                NaN                          =
+        NaN               =20
+    1.6332e+09             NaN                  NaN              NaN       =
+       NaN                NaN                    NaN                   NaN =
+                   2.424e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                               NaN                =
+                NaN                                 NaN                    =
+               NaN                                  NaN                    =
+           NaN                                NaN                          =
+        NaN               =20
+    1.6332e+09             NaN                  NaN              NaN       =
+       NaN                NaN                    NaN                   NaN =
+                  2.6323e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                               NaN                =
+                NaN                                 NaN                    =
+               NaN                                  NaN                    =
+           NaN                                NaN                          =
+        NaN               =20
+    1.6332e+09             NaN                  NaN              NaN       =
+       NaN                NaN                    NaN                   NaN =
+                  2.8405e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                               NaN                =
+                NaN                                 NaN                    =
+               NaN                                  NaN                    =
+           NaN                                NaN                          =
+        NaN               =20
+
+Data After Imputing Null Values But Before Normalizing
+  5=C3=9734 table
+
+    timestamp     ATTITUDE.time_boot_ms    ATTITUDE.roll    ATTITUDE.pitch =
+   ATTITUDE.yaw    ATTITUDE.rollspeed    ATTITUDE.pitchspeed    ATTITUDE.ya=
+wspeed    SERVO_OUTPUT_RAW.time_usec    SERVO_OUTPUT_RAW.port    SERVO_OUTP=
+UT_RAW.servo1_raw    SERVO_OUTPUT_RAW.servo2_raw    SERVO_OUTPUT_RAW.servo3=
+_raw    SERVO_OUTPUT_RAW.servo4_raw    SERVO_OUTPUT_RAW.servo5_raw    SERVO=
+_OUTPUT_RAW.servo6_raw    SERVO_OUTPUT_RAW.servo7_raw    SERVO_OUTPUT_RAW.s=
+ervo8_raw    SERVO_OUTPUT_RAW.servo9_raw    SERVO_OUTPUT_RAW.servo10_raw   =
+ SERVO_OUTPUT_RAW.servo11_raw    SERVO_OUTPUT_RAW.servo12_raw    SERVO_OUTP=
+UT_RAW.servo13_raw    SERVO_OUTPUT_RAW.servo14_raw    SERVO_OUTPUT_RAW.serv=
+o15_raw    SERVO_OUTPUT_RAW.servo16_raw    NAV_CONTROLLER_OUTPUT.nav_roll  =
+  NAV_CONTROLLER_OUTPUT.nav_pitch    NAV_CONTROLLER_OUTPUT.nav_bearing    N=
+AV_CONTROLLER_OUTPUT.target_bearing    NAV_CONTROLLER_OUTPUT.wp_dist    NAV=
+_CONTROLLER_OUTPUT.alt_error    NAV_CONTROLLER_OUTPUT.aspd_error    NAV_CON=
+TROLLER_OUTPUT.xtrack_error
+    __________    _____________________    _____________    ______________ =
+   ____________    __________________    ___________________    ___________=
+______    __________________________    _____________________    __________=
+_________________    ___________________________    _______________________=
+____    ___________________________    ___________________________    _____=
+______________________    ___________________________    __________________=
+_________    ___________________________    ____________________________   =
+ ____________________________    ____________________________    __________=
+__________________    ____________________________    _____________________=
+_______    ____________________________    ______________________________  =
+  _______________________________    _________________________________    _=
+___________________________________    _____________________________    ___=
+____________________________    ________________________________    _______=
+___________________________
+
+    1.6332e+09         1.2599e+09           9.0782e+08        5.9667e+08   =
+    3.4293e+08         1.5807e+08            4.6141e+07            7.1144e+=
+05                2.0075e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                           -3.4795e-08            =
+            -8.7658e-08                         -1.4352e-07                =
+           -1.9222e-07                          -2.2872e-07                =
+       -2.5229e-07                        -2.6544e-07                      =
+    -2.7286e-07           =20
+    1.6332e+09         1.2982e+09            9.795e+08        6.9222e+08   =
+    4.4878e+08         2.5767e+08            1.2211e+08            3.9098e+=
+07                2.2158e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                           -1.1678e-08            =
+            -2.2126e-08                         -2.4054e-08                =
+           -1.2403e-08                           1.5556e-08                =
+        6.0137e-08                         1.1944e-07                      =
+      1.897e-07           =20
+    1.6332e+09         1.3217e+09            1.023e+09          7.49e+08   =
+    5.0966e+08         3.1221e+08            1.6069e+08            5.6374e+=
+07                 2.424e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                            1.1864e-08            =
+             3.9806e-08                          8.6933e-08                =
+            1.5542e-07                           2.4646e-07                =
+        3.5999e-07                         4.9443e-07                      =
+     6.4653e-07           =20
+    1.6332e+09         1.3353e+09           1.0479e+09        7.8081e+08   =
+    5.4263e+08         3.4029e+08            1.7913e+08            6.3774e+=
+07                2.6323e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                            3.2698e-08            =
+             9.5481e-08                          1.8773e-07                =
+            3.0961e-07                           4.6145e-07                =
+         6.432e-07                         8.5385e-07                      =
+     1.0908e-06           =20
+    1.6332e+09         1.3426e+09           1.0611e+09        7.9732e+08   =
+    5.5908e+08         3.5351e+08            1.8711e+08            6.6587e+=
+07                2.8405e+05                      0                        =
+ 1500                           1500                           1000        =
+                   1500                           1000                     =
+      1000                           1000                           1000   =
+                          0                              0                 =
+              0                               0                            =
+   0                               0                               0       =
+                        0                            5.0484e-08            =
+             1.4393e-07                          2.7667e-07                =
+            4.4743e-07                           6.5629e-07                =
+        9.0379e-07                           1.19e-06                      =
+     1.5137e-06           =20
+
+Data After Normalization
+  5=C3=9734 table
+
+    timestamp     ATTITUDE.time_boot_ms    ATTITUDE.roll    ATTITUDE.pitch =
+   ATTITUDE.yaw    ATTITUDE.rollspeed    ATTITUDE.pitchspeed    ATTITUDE.ya=
+wspeed    SERVO_OUTPUT_RAW.time_usec    SERVO_OUTPUT_RAW.port    SERVO_OUTP=
+UT_RAW.servo1_raw    SERVO_OUTPUT_RAW.servo2_raw    SERVO_OUTPUT_RAW.servo3=
+_raw    SERVO_OUTPUT_RAW.servo4_raw    SERVO_OUTPUT_RAW.servo5_raw    SERVO=
+_OUTPUT_RAW.servo6_raw    SERVO_OUTPUT_RAW.servo7_raw    SERVO_OUTPUT_RAW.s=
+ervo8_raw    SERVO_OUTPUT_RAW.servo9_raw    SERVO_OUTPUT_RAW.servo10_raw   =
+ SERVO_OUTPUT_RAW.servo11_raw    SERVO_OUTPUT_RAW.servo12_raw    SERVO_OUTP=
+UT_RAW.servo13_raw    SERVO_OUTPUT_RAW.servo14_raw    SERVO_OUTPUT_RAW.serv=
+o15_raw    SERVO_OUTPUT_RAW.servo16_raw    NAV_CONTROLLER_OUTPUT.nav_roll  =
+  NAV_CONTROLLER_OUTPUT.nav_pitch    NAV_CONTROLLER_OUTPUT.nav_bearing    N=
+AV_CONTROLLER_OUTPUT.target_bearing    NAV_CONTROLLER_OUTPUT.wp_dist    NAV=
+_CONTROLLER_OUTPUT.alt_error    NAV_CONTROLLER_OUTPUT.aspd_error    NAV_CON=
+TROLLER_OUTPUT.xtrack_error
+    __________    _____________________    _____________    ______________ =
+   ____________    __________________    ___________________    ___________=
+______    __________________________    _____________________    __________=
+_________________    ___________________________    _______________________=
+____    ___________________________    ___________________________    _____=
+______________________    ___________________________    __________________=
+_________    ___________________________    ____________________________   =
+ ____________________________    ____________________________    __________=
+__________________    ____________________________    _____________________=
+_______    ____________________________    ______________________________  =
+  _______________________________    _________________________________    _=
+___________________________________    _____________________________    ___=
+____________________________    ________________________________    _______=
+___________________________
+
+             0            0.9347              0.88602          0.84155     =
+     0.73934            0.44701               0.055268             0.000488=
+03                         0                      0                        =
+0.36123                        0.99998                        0.9999       =
+                     1                           0.99543                   =
+     0.98296                        0.7744                         0.60288 =
+                       0.49701                        0.44744              =
+           0.43194                         0.44175                         =
+0.46618                         0.49052                         0.50559    =
+                      0.4946                          0.77074              =
+              0.70275                               0.5                    =
+             0.47192                              0.31414                  =
+         0.5294                             0.23845                        =
+      0.57994             =20
+    1.2145e-05            0.9631              0.93632          0.91323     =
+     0.86164             0.7196                0.14336                0.026=
+82                1.3796e-05                      0                        =
+0.36123                        0.99998                        0.9999       =
+                     1                           0.99543                   =
+     0.98296                        0.7744                         0.60288 =
+                       0.49701                        0.44744              =
+           0.43194                         0.44175                         =
+0.46618                         0.49052                         0.50559    =
+                      0.4946                          0.77074              =
+              0.70275                               0.5                    =
+             0.47192                              0.31414                  =
+         0.5294                             0.23845                        =
+      0.57994             =20
+    1.2315e-05           0.98053              0.96683          0.95583     =
+       0.932            0.86888                 0.1881               0.0386=
+71                2.7592e-05                      0                        =
+0.36123                        0.99998                        0.9999       =
+                     1                           0.99543                   =
+     0.98296                        0.7744                         0.60288 =
+                       0.49701                        0.44744              =
+           0.43194                         0.44175                         =
+0.46618                         0.49052                         0.50559    =
+                      0.4946                          0.77074              =
+              0.70275                               0.5                    =
+             0.47192                              0.31414                  =
+         0.5294                             0.23845                        =
+      0.57994             =20
+    1.2439e-05           0.99064               0.9843          0.97969     =
+     0.97009            0.94572                0.20948               0.0437=
+48                4.1387e-05                      0                        =
+0.36123                        0.99998                        0.9999       =
+                     1                           0.99543                   =
+     0.98296                        0.7744                         0.60288 =
+                       0.49701                        0.44744              =
+           0.43194                         0.44175                         =
+0.46618                         0.49052                         0.50559    =
+                      0.4946                          0.77074              =
+              0.70275                               0.5                    =
+             0.47192                              0.31414                  =
+         0.5294                             0.23845                        =
+      0.57994             =20
+    1.2559e-05           0.99609               0.9936          0.99207     =
+      0.9891            0.98192                0.21873               0.0456=
+77                5.5183e-05                      0                        =
+0.36123                        0.99998                        0.9999       =
+                     1                           0.99543                   =
+     0.98296                        0.7744                         0.60288 =
+                       0.49701                        0.44744              =
+           0.43194                         0.44175                         =
+0.46618                         0.49052                         0.50559    =
+                      0.4946                          0.77074              =
+              0.70275                               0.5                    =
+             0.47192                              0.31414                  =
+         0.5294                             0.23845                        =
+      0.57994             =20
+
+</pre><img vspace=3D"5" hspace=3D"5" src=3D"https://wrprod01-prod-useast1.m=
+athworks.com/static/IwTq6Wf8/MATLAB%20Drive/html/Colletti_proj_1b_01.png" a=
+lt=3D""> <p class=3D"footer"><br><a href=3D"https://www.mathworks.com/produ=
+cts/matlab/">Published with MATLAB=C2=AE R2021b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+% Gabriella Colletti
+% Project 1 Part B
+
+%=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D%
+clear;close all
+
+% Importing Flight Log CSV=20
+data =3D readtable('output.csv', VariableNamingRule=3D'preserve');
+column_names =3D data.Properties.VariableNames;
+
+% Number of Columns and Row
+[rows, cols] =3D size(data);
+fprintf('Number of Rows: %d\n', rows);
+fprintf('Number of Columns: %d\n', cols);
+
+% Data Before NAN Value Imputation
+fprintf('Data Before Imputing Null Values\n')
+display(data(1:5,:));
+
+% Impute NAN values
+addpath('/MATLAB Drive/')
+matrix =3D table2array(data);
+new_matrix =3D inpaint_nans(matrix, 1);
+data =3D array2table(new_matrix,  VariableNames=3D column_names);
+
+% Data After NAN Value Imputation
+fprintf('Data After Imputing Null Values But Before Normalizing\n')
+display(data(1:5,:));
+
+% Normalize Feature Ranges between 0 and 1
+matrix =3D table2array(data);
+new_matrix =3D normalize(matrix, 'range');
+data =3D array2table(new_matrix,  VariableNames=3D column_names);
+
+% Data After Normalization
+fprintf('Data After Normalization\n')
+display(data(1:5,:));
+
+% Verify Constant Timestamp=20
+timestamp_column =3D data(:, 'timestamp');
+timestamp_vector =3D table2array(timestamp_column);
+plot_delta(timestamp_vector);
+
+
+
+%REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_=
+WITH_DASH_DASHREPLACE_WITH_DASH_DASH PLOT TIMESTAMP DELTA REPLACE_WITH_DASH=
+_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPL=
+ACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_=
+DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH=
+REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH%
+function timestamp =3D plot_delta(timestamp)
+%timestamp is the 1D vector of timestamps
+deltas =3D [];
+for i=3D300:size(timestamp)-1
+    deltas =3D [deltas  timestamp(i+1) - timestamp(i)];
+end=20
+figure
+x =3D 300:size(timestamp)-1;
+plot(x,deltas)
+xlabel('Timestamp Index')
+ylabel('Delta Timestamp')
+title('Comparison of Timestamp Deltas')
+end
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>
+------MultipartBoundary--TJEpq3Y6U5TemU8YoZlTLUSNw5xZgQhdAfbFyQNK5S----
+Content-Type: text/css
+Content-Transfer-Encoding: quoted-printable
+Content-Location: cid:css-fb08ba27-123a-42bb-a9b6-7b7936135edc@mhtml.blink
+
+@charset "utf-8";
+
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, b=
+lockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, f=
+ont, img, ins, kbd, q, s, samp, small, strike, strong, tt, var, b, u, i, ce=
+nter, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption=
+, tbody, tfoot, thead, tr, th, td { margin: 0px; padding: 0px; border: 0px;=
+ outline: 0px; font-size: 100%; vertical-align: baseline; background: trans=
+parent; }
+
+body { line-height: 1; }
+
+ol, ul { list-style: none; }
+
+blockquote, q { quotes: none; }
+
+blockquote::before, blockquote::after, q::before, q::after { content: none;=
+ }
+
+:focus { }
+
+ins { text-decoration: none; }
+
+del { text-decoration: line-through; }
+
+table { border-collapse: collapse; border-spacing: 0px; }
+
+html { min-height: 100%; margin-bottom: 1px; }
+
+html body { height: 100%; margin: 0px; font-family: Arial, Helvetica, sans-=
+serif; font-size: 10px; color: rgb(0, 0, 0); line-height: 140%; background:=
+ none rgb(255, 255, 255); overflow-y: scroll; }
+
+html body td { vertical-align: top; text-align: left; }
+
+h1 { padding: 0px; margin: 0px 0px 25px; font-family: Arial, Helvetica, san=
+s-serif; font-size: 1.5em; color: rgb(213, 80, 0); line-height: 100%; font-=
+weight: normal; }
+
+h2 { padding: 0px; margin: 0px 0px 8px; font-family: Arial, Helvetica, sans=
+-serif; font-size: 1.2em; color: rgb(0, 0, 0); font-weight: bold; line-heig=
+ht: 140%; border-bottom: 1px solid rgb(214, 212, 212); display: block; }
+
+h3 { padding: 0px; margin: 0px 0px 5px; font-family: Arial, Helvetica, sans=
+-serif; font-size: 1.1em; color: rgb(0, 0, 0); font-weight: bold; line-heig=
+ht: 140%; }
+
+a { color: rgb(0, 95, 206); text-decoration: none; }
+
+a:hover { color: rgb(0, 95, 206); text-decoration: underline; }
+
+a:visited { color: rgb(0, 74, 160); text-decoration: none; }
+
+p { padding: 0px; margin: 0px 0px 20px; }
+
+img { padding: 0px; margin: 0px 0px 20px; border: none; }
+
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom: 0px; }
+
+ul { padding: 0px; margin: 0px 0px 20px 23px; list-style: square; }
+
+ul li { padding: 0px; margin: 0px 0px 7px; }
+
+ul li ul { padding: 5px 0px 0px; margin: 0px 0px 7px 23px; }
+
+ul li ol li { list-style: decimal; }
+
+ol { padding: 0px; margin: 0px 0px 20px; list-style: decimal; }
+
+ol li { padding: 0px; margin: 0px 0px 7px 23px; list-style-type: decimal; }
+
+ol li ol { padding: 5px 0px 0px; margin: 0px 0px 7px; }
+
+ol li ol li { list-style-type: lower-alpha; }
+
+ol li ul { padding-top: 7px; }
+
+ol li ul li { list-style: square; }
+
+.content { font-size: 1.2em; line-height: 140%; padding: 20px; }
+
+pre, code { font-size: 12px; }
+
+tt { font-size: 1.2em; }
+
+pre { margin: 0px 0px 20px; }
+
+pre.codeinput { padding: 10px; border: 1px solid rgb(211, 211, 211); backgr=
+ound: rgb(247, 247, 247); }
+
+pre.codeoutput { padding: 10px 11px; margin: 0px 0px 20px; color: rgb(76, 7=
+6, 76); }
+
+pre.error { color: red; }
+
+@media print {
+  pre.codeinput, pre.codeoutput { overflow-wrap: break-word; width: 100%; }
+}
+
+span.keyword { color: rgb(0, 0, 255); }
+
+span.comment { color: rgb(34, 139, 34); }
+
+span.string { color: rgb(160, 32, 240); }
+
+span.untermstring { color: rgb(178, 0, 0); }
+
+span.syscmd { color: rgb(178, 140, 0); }
+
+span.typesection { color: rgb(160, 82, 45); }
+
+.footer { width: auto; padding: 10px 0px; margin: 25px 0px 0px; border-top:=
+ 1px dotted rgb(135, 135, 135); font-size: 0.8em; line-height: 140%; font-s=
+tyle: italic; color: rgb(135, 135, 135); text-align: left; float: none; }
+
+.footer p { margin: 0px; }
+
+.footer a { color: rgb(135, 135, 135); }
+
+.footer a:hover { color: rgb(135, 135, 135); text-decoration: underline; }
+
+.footer a:visited { color: rgb(135, 135, 135); }
+
+table th { padding: 7px 5px; text-align: left; vertical-align: middle; bord=
+er: 1px solid rgb(214, 212, 212); font-weight: bold; }
+
+table td { padding: 7px 5px; text-align: left; vertical-align: top; border:=
+ 1px solid rgb(214, 212, 212); }
+------MultipartBoundary--TJEpq3Y6U5TemU8YoZlTLUSNw5xZgQhdAfbFyQNK5S----
+Content-Type: image/png
+Content-Transfer-Encoding: base64
+Content-Location: https://wrprod01-prod-useast1.mathworks.com/static/IwTq6Wf8/MATLAB%20Drive/html/Colletti_proj_1b_01.png
+
+iVBORw0KGgoAAAANSUhEUgAAAWkAAAEPCAIAAAAPtKJeAAAAB3RJTUUH5QoJAgEzGKrzgwAAIABJ
+REFUeJzt3XtcFPX+P/DPghuCAhqojy+UaR6BA+kqYiBHlDCtNMVrWigYiZaK4AUlVOiAJV7zlp4e
+BkH66OSFiMzAIEwBBbQob7nhBSUwuSkLLuyyu/P74/NofnsWWHaG2WXR1/Phw8fuZ2Y+857PZ+bN
+zOxcRAzDEAAAjiy6OgAA6JaexNwhlUrj4+O7OgqA7k302Byz1NbW5ubmNjc329vbT5o0qWfPnm2O
+plarw8PD8/PzL126ZOIIr1y5cvfu3VdffdXCootTdnNz84kTJ2hbTZs2TXtQUVFRbW1t60m8vb0d
+HBzMZxGMii4m/WxhYTFs2DBnZ2cDpy0vL7969eqrr75qtOjMBvNY2LZtG12ct956y8PDgxCybt26
+NsfcvXv3hQsXRo4caeIIGYZZtGgRIeTo0aOmn7WOcePGEUIWL17cegVYt24dIWTcuHEDBw7UXk8u
+XrzImHARSkpKCCHnzp0z9ozaRBeTEDJlypSAgAD6uaSkxJBpP/vsM7ZVu3YpjO1xyB3JycmEkBdf
+fJEtoVvFF198oTPmlStX1q9fzzBMl+QOM1FWVkYI8fDw0D/asmXLCCGZmZmmiUpHeno6IeTAgQNd
+MneaO27evEm/NjU1vffee4SQmJiYDqfVzh1duxTG1l1zh1wuj4+PV6lUzN/HXAzDnD9/fvXq1UuX
+Lt2/fz9beOHChQMHDgQGBtKS5ORk5u/cQQjJzs7esWMHHVRaWtrS0vLBBx/Qr+yqY29v7+HhcfLk
+yVmzZhFChg4dWl9fz0aSnp7+1ltv0Unee++9u3fv0nIrK6thw4YVFxezkfz000+EkN9//51hmEeP
+Hm3atGnKlCl0aHZ2tvbS5ebmzpkzhw7S/iNPxzx69OiMGTMIIRKJpKWlpb0marOSiIiIl19+mRYG
+BwfTvYk2tZk7tBfBwNajkcybN4+Wf/nll2x5e40wf/78sWPH0sJ58+Y1NTXpb2pB+lGbTu5g50K0
+dtPaWyg2d3BdCv2rhBnqlrmjpqYmKCjIxcVFqVRevHiREOLk5PTDDz/4+/vn5OQUFBSEhYUtXbqU
+jjx16lRCyD//+c+PPvpo4sSJhBA7O7thw4YdO3aMdtKnn34qlUrZ3dTk5OSbN28GBwcTQvLz8xmG
+YVeRkydPpqWlaa9DdAUNDg5+9OiRVCql60RxcTHDMDNmzKBb+Isvvkj3Wula9dVXXzEMQ1eRAwcO
+VFZWfvrpp4SQl19+mdZJv44cObKysvKLL74ghPTv358Oopt9r169srOzMzIydNZmbe1VkpmZyW5U
+6enplZWV7TVym7lDexEMbD0aybhx45qammjqsbKyorW11wiZmZkbNmwghAQEBJw8eZLmRz1N3fl+
+1NFm7vjqq68IIXv37tW/UGzu4LoUelYJ89T9ckdWVlZAQMBPP/1EcwfdhMaMGTN27Njz58/TcZRK
+pb+/f2FhYX19PbuK/PHHHwUFBWvXrqW5pqCgQHvtUSgU2l8rKysJIa+99hrz9zpHO5j5+yCWHiKd
+PXuW/hHWnmrx4sUMw9DEob2X23rDYwddvHjxr7/+YhhGO2CKrkaffPIJ83fukEqldBA9WGvdRPor
+yc7Opuu9/nY2MHfob73WkeTm5hJCEhMT9TQC09bevp6m7nw/6mgzd9DI/f399S+U/mMWA5dCpzXM
+kzmeLd+2bZtcLme/1tbWHjx4kP1aXl6elJTk6+tLv/bo0YMQUl9f39DQ4OPjQwvFYvHYsWPT09Pp
+34SFCxcSQoYOHerr67tq1SpCSE1NDa3B3t6eTvLUU08RQpycnOhXBwcHQsitW7cIIfQPzujRo+mg
+ESNGEELowYifn9+DBw/Wrl375ptvzpw5kx4VNzY2stHSMy+thYeHE0JEItGaNWuOHDnSv3//AQMG
+EEK0A6bo0RY9GZyTk0MIcXFxoYNsbGzarFx/JQLqsPXoRkUICQsL69OnT1hYGN0Joom7vUZok/6m
+7mQ/GqKlpYVWqH+h9NOzFJxawxz06OoA2hAaGpqQkLBx40YbG5va2trt27dv3LiRHUr/JtCOJIR4
+e3sTQq5du8Ye21OWlpa///47TRDafWBra0sIefrpp+lXnd8aaSYyXFxcXHx8vJOTU1JSkoeHR48e
+PTIyMq5evUoIoX9znnvuuTYn3LNnz9y5c3Nzcy9fvnzkyJE///xTIpH8+uuvdGjrgJubm+lXR0dH
+A2PTU4lQOmw92k0SiYQ9giOEzJkzZ9SoUaSjRtChp6kNiaTzrl27RoPXv1D66VkKTq1hFrp6x6dt
+NTU10dHRd+/eXb9+/aNHj1qPoFQq6TEL8/eefGBgIDuU/jhvZ2d38+ZNQsigQYPYQfQY57333mMY
+hhDSt29fdhAhZODAgfQz3fV1dXVl/t7XZU8N0F1WKysrtVqt04aFhYWEEF9fX6bVLijzvzv87HEH
+tXLlSjpyhwE7Ojqyg+gf0taNo78SAY9ZOmw9ulWMGjWKHU2hUBQXF6vVaj2NwLTa2++wqTvTj62X
+vfUxS11dHRuA/oXSc8yifyn0tIZ5MsdjFkKIg4NDaGjo9OnTIyIi2tszZ+3du5cQkpGRQff9bt26
+Ra9NmD9//vPPPz9r1qyysrKsrCxCyIMHD+jeO/tDjOHoWTdCSExMDCEkNTVVZ4Tq6uq4uDhCyKBB
+g/RXVV5e7urqKhKJNBoNLWloaKAfBAlYwKXuJHd398DAwJ9//pkebWk0mmXLlr344otFRUV6GoEQ
+0rdvX0LIkSNH2qzW8KZurcN+ZMnlcqVSWV1dfezYsfHjxxNCMjMz9S+UTg2GL4X+1jBTXZ282lZV
+VRUVFXX37t3o6OgO9zsYhjl37py1tbX2coWGhiYlJTEM09DQQA9n6H67WCxmfy0jhv29ohUGBwez
+R9Hs+bZTp07REnoFET3RwP4ATNrf7zh79qxEIiF/r15E6wyo/oAN2e/QX4kp9ztoJHRz7dWrF11S
+9i+/nkZgGIb9WZ2eb9bf1J3sRx3sjzWUk5PT6tWr6+rqtJu3vYXS3u/gtBT6W8MMmWPuoImDpoya
+mhr2szad3MEwzNatW5cvX15fX69WqwsLC318fGQyGTtUrVY3NDTQvUqu2CygUCjaTGSPHj1SKBQ8
+alYoFO1F1ZmAha1EEHoi0dMITU1Njx490r6GhXdTMwb0I1cGNi+npdDTGuZGsPtZ8vLyMjIy5HL5
+4MGDFy5c2K9fP50R0tLS6K9irPj4+DZvi9i8ebP2oUptbe3XX38dFhZGvwYEBNBfYR48eEAz9Jgx
+Yz7++GO1Wh0XF3fmzBlnZ+f6+vodO3a4u7sLsmgikYgQIlRDQVdBPwpLmNyRmpqakpKyZs0aOzu7
+06dPZ2ZmfvvttzrpY82aNY6Ojm5ubmzJ9OnTOz9rHWq1WqlU6hy/dNLp06ctLCzoES90X+hHYQmQ
+O9RqtUQiSU9PHzp0KC0JDQ2VSCQRERHaoy1dujQ4OJi9BAMAujUBfgYXiURJSUls4iCEODg4sL9p
+sVQq1ZAhQ7Kysq5cuSKRSOjl4QDQTQn//A6ZTPbKK6/s2rWLXrXFmjp1qq2trZub23PPPXfy5Emx
+WJycnGxlZSXs3AHANATOHXK5fPny5U5OTps2bdIZtGHDhpkzZ3p6etKv8+bNe/nll7V/DHN1dRUw
+EoAnllQqNcVsBPzN5u7du5MnT968ebMhIx8+fDg8PFy7xMXFRcBgdBi1cmPXj8pRuZlUrk2w60pP
+nz4dHBwcGRkZHR3deqhMJjt37px2yf379015wGLsTGzU+lE5KjdDwuSO3bt379q16/PPP9c5A5qW
+lpaQkEAIUavVERERJ0+epOVSqfTo0aNBQUGCzB0ATE+A8x0XL15snQUCAwO3bt26du3anJycX375
+hRBy9erVmJiYurq6Pn36NDY2xsTE6CQaV1fXxyMfA3Qhk21Hpn5OektLi0qlavPaLeQOgM4z2XZk
+6ud3iMVisVhs4pkCgODM9B58ADBzyB0AwAdyBwDwgdwBAHwgdwAAH8gdAMAHcgcA8IHcAQB8IHcA
+AB/IHQDAB3IHAPCB3AEAfCB3AAAfyB0AwAdyBwDwgdwBAHwgdwAAH8gdAMAHcgcA8IHcAQB8IHcA
+AB/IHQDAB3IHAPCB3AEAfCB3AAAfyB0AwAdyBwDwgdwBAHwgdwAAH8gdAMDHY547RKtzuzoEgMfT
+Y547AMBIephyZnl5eRkZGXK5fPDgwQsXLuzXr58p5w4AAjLdfkdqampsbOxLL7305ptvNjU1TZs2
+rbq62mRzBwBhmWi/Q61Wb9u2LT09fejQoYQQPz+/srKyL7/8MiIiwjQBAICwTLTfIRKJkpKSaOKg
+HBwc6urqTDN3ABCciXKHhYWFt7c3+1Umk+Xn50+ePNk0cwcAwZn0XCkll8sjIyMnTJignU0oV1dX
+QohUKjV9VADdHd18TMbUuaO8vPzdd9/18/OLjo5uPRRZA4A3uvmYLIOYNHecPn06Pj4+JiZm4sSJ
+ppwvAAjOdLlj9+7dubm5n3/++aBBg0w2UwAwEhPljosXL+7fv58Q8sorr7CFgYGBW7duNU0AACAs
+E+UOLy8vnMsAeJzgfhYA4AO5AwD4QO4AAD6QOwCAD56549dff503b97MmTOPHDnS0NAgbEwAYP44
+5w61Wj1ixIj58+dXV1fL5fI9e/Z4eXmdOHHCGMEBgNni/Bvt3LlzX3755e3bt7MlRUVFCxcunDp1
+qqCBAYBZ47zfcf/+/aioKO0Sb2/vp59+GkcuAE8Uzrlj4sSJ+fn52iUKhUKpVNra2goXFQCYO87H
+LIsWLYqLiystLZ01axYhpKysbOXKlUePHi0tLSWEaD/dBwAeY5xzx4YNG6RS6bVr19jzo/b29mFh
+YfTz7t27vby8hAwQAMwS59yRnJxsjDgAoHvBtWEAwAfP+2grKipaWlq0S/BUDoAnCufcUVpa+vrr
+r4vFYisrK7bQwsLiwoULggYGAGaN8zHL4sWL4+Pjr1y58rMWc0sc2q+h7ZJX0uI9uJzoNBdar1vg
+nDtEItGkSZOMEUrbs2t/NTLSGsZWy7t+U676ndnqTBBn55PCY5n6H4/kyDl3bN++fceOHcYIRYdo
+dS5tYvpB+zP5u/XZr9qTtB7Uehztcp2pSDtrfHuDdP61N6jDJdWfJduce+vR9BfqaU89C9h62jZD
+ai9CQ1pAz3wNWZz24uxwWVovV+vxW69FbXZHe+uY/uXVs4q2twKbDxHDMFyn+fbbbzds2ODo6CgS
+iWiJhYVFdnZ2J0NxdXXVfi6hnvZidgTwaE1+U7VXFf3QyQp1QqLV0pL2ojVkKTq5pHRyHpXon6R1
+te2V8JsLW66nQp1xDFxG7X7pMJ42v7YZUpsxdBgSu+61R2c7Mh7OuSMxMTE1NXX9+vXDhw/XLtf5
+yoPhucNMCJiMzJAJls70DdhVC2WMv1vtMd/c4efn9/XXX/fr10/wULpd7gAwPfPJHZzPd3h5eTU3
+NxsjFADoRjhf35GYmLhgwYLIyEid296MsScCAGaLc+4ICgq6fv364sWLtQstLCwuXbokXFQAYO44
+547jx48bIw4A6F543s9SWVmpVCrZrwqFwmRv3wYAc8DzfhY7OzuZTObo6FhXV6fRaJ555pkff/zR
+GPEBgHninDtWrFixc+fOKVOmTJgwIT093c7Obtu2bU5OTsYIDgDMFuffaBsbG1966SX6md6GHxUV
+tXPnToHjAgDzxjl3iMXipqYmQoitrW1dXR0t7NWrF56TDvBE4Zw7wsLCoqOjCSGxsbELFixoaGi4
+dOlSdXU1npMO8EThfL7jzTffPHXqVGlpqaenp7u7O32ycXx8vBFiAwDzxec32pSUFPohOTlZJpNZ
+W1uLxWIhgwIAs8c5d1RUVDg7O7Nf7ezsCCHz589PTU1VKpXbt2+PiYmxtLRsPWFaWlpJSYl2SXx8
+vIUFHrYM0C3xeeZgZWWlTuGdO3cqKirCwsIOHz6s0WjanPD8+fO9e/f20oLEAdB9cdjviI6OvnXr
+1o0bNyIjI7XLa2trq6qq3n777djYWD0PLpXL5f7+/j4+PvyDBQCzwSF32NjYqFQqQgj9nzV+/HgH
+B4cpU6ZoH8u0plKphgwZkpWVdeXKFYlEMnHiRH4RA4A54JA7YmNjCSHTp0/ft29fmxeS6ryxRce9
+e/ciIiLc3Nyee+65gwcPpqSkJCcna7+oAQC6Ec7nSr/55hvtrwqFwsDtXyKRzJw509PTkxASEhIy
+b968Q4cOLVq0SHscekOdaZ56BPCYMfH9qHzOVu7Zs6e2tpYQsmLFiuHDh7u6up47d67DqTZt2kQT
+BzV16tTWj/yQSqVIHAD8mHjz4Zw7Pv300/T0dAcHh8rKylOnTqWnp3/xxRfLly/XP5VMJtPJL/fv
+38cBC0D3xTl3HDly5PDhw4SQn3/+2cnJyd3d3dvb29LSkt7koiMtLS0hIYEQolarIyIiTp48Scul
+UunRo0eDgoI6FzwAdBnO5ztUKhW9dSUpKWngwIG0sKGhYfz48fR6DT8/P0LImDFjPv7446Kiopyc
+nI0bN/bt2zclJSUmJiYxMbFPnz6NjY0JCQkjRowQdFkAwHQ4546RI0f+97//nTp16u+///7dd98R
+QkpLS3v27FlcXNx65K1bt7KfPTw8MjIyWlpaVCqVtbV1Z4IGgC7HOXfs3r3bx8dn586dEolk6NCh
+1dXVr7/+uuHP7xCLxbj5BeAxwOdeuMLCQvan2X79+p09e3bAgAFCBwYAZo3nHSWNjY3Xrl2jnx0d
+HYWLBwC6Bz65Y+nSpb6+vjNmzKioqKioqHB3dy8vLxc8MgAwZ5xzR2JiolgslkqlEomEEOLs7Lx/
+//433njDCLEBgPninDtOnTpFL9lgTZgwQaVSKRQK4aICAHPHOXeIRKLW97wpFAo8jAPgicJ5gw8J
+CZk9e/aDBw/oV41Gs3PnTkdHR/zyCvBE4fwbbUhIyJ07d+gjfKZNm9bY2GhnZ6fnkT8A8Fjic31H
+bGxseHj4vXv3GIaxs7N79tlnBQ8LAMwcz3dZy+VyGxsbQoharS4rKyOEDBo0SLioAMDc8XyXtVgs
+1r6D3sLCAoctAE8Uzrlj8eLF8fHxc+fONUY0ANBd8PmNdtKkScYIBQC6Ec65Y/v27Tt27DBGKADQ
+jXA+ZvH09Pzzzz+HDx/u6OgoEolooYWFRXZ2ttCxAYD54pw7EhMTU1NT169fP3z4cGMEBADdAufc
+cfLkybNnz/br188Y0QBAd8H5fIeXl1dzc7MxQgGAboTPMcuCBQsiIyOHDh2qXY49EYAnCufcERQU
+dP369cWLF2sXWlhYtH5REwA8xjjnjuPHjxsjDgDoXvDQDQDgg8N+R0lJyciRI9lHHOtwd3cXKCQA
+6AYMzR1lZWXLly8vKCjYt2/f9evXdYaKRKIff/xR6NgAwHwZmjsGDRr0xRdfEEL2799vzHgAoHsw
+9HxHWVlZcHCwUUMBgG4E50oBgA9uv9G2d6KU4FwpwBOGQ+6oqalZsGBBm4Pw3DCAJw2H3OHo6FhQ
+UGC8UACgG8H5DgDgg0PuwPvuAYBlaO4YNGhQRkaGUUMBgG7E1McsTU1NCQkJarXaxPMFAGGZNHfU
+1taGhYUdPnxYo9GYcr4AIDjT5Y5Tp0698cYbYWFhJpsjABgPz3dK8lBeXp6UlOTs7GyyOQKA8fDM
+HZWVlUqlkv2qUChcXV31T7Jo0SJCSEtLi55xaCVSqZRfVABPsg63QWHxfB+tnZ2dTCZzdHSsq6vT
+aDTPPPOMIPfgI2sA8EY3H5NlEM65Y8WKFTt37pwyZcqECRPS09Pt7Oy2bdvm5ORkjOAAwGxxPlfa
+2Nj40ksv0c/0ACQqKmrnzp0CxwUA5o1z7hCLxU1NTYQQW1vburo6WtirV6+GhgaBQwMAM8Y5d4SF
+hUVHRxNCYmNjFyxY0NDQcOnSperqaltbW/0TBgQE+Pj4+Pn5EUL8/Px8fHxWrlzJL2gA6HKcz3e8
++eabp06dKi0t9fT0dHd39/LyIoTEx8d3OGFubi6fAAHALPH5jTYlJYV+SE5Olslk1tbWYrFYyKAA
+wOxxPmapqKjQ/mpnZycWi+fPn49bVACeKJxzx+LFiysrK3UK79y5I5fLBQoJALoBDscs0dHRt27d
+unHjRmRkpHZ5bW1tVVVVh+dKAeBxwmG/w8bGRqVSEUJU/2v8+PEXL140WoQAYI447HfExsYSQqZP
+n75v3z5cSArwhOOQO+gLFj766KOHDx8+fPhQZyjesQDwROH2Ptr2huJ9tABPGg7vo8XFXQDAwjsW
+AIAPnrmjtraWfb8krgoDeALxyR1Lly719fWdMWNGRUVFRUWFu7t7eXm54JEBgDnjnDsSExPFYrFU
+KpVIJIQQZ2fn/fv3v/HGG0aIDQDMF+fccerUqYSEBO2SCRMmqFQqhUIhXFQAYO445w6RSNT6ecUK
+hcLCAqddAZ4gnDf4kJCQ2bNnP3jwgH7VaDQ7d+50dHTEbfgATxTOz+8ICQm5c+eOj48PIWTatGmN
+jY12dnYXLlwwQmwAYL74PPsnNjY2PDz83r17DMPY2dk9++yzgocFAGaOT+6ora1taGiwt7d/+umn
+ra2tBY8JAMwft9yRl5e3atUqmUzGljg7O6elpfXt21fowADArHE4V3rkyJFFixYFBwdfuHBBKpVK
+pdLTp087OTn5+PjU1tYaL0QAMEMcckd8fPxnn30WHh5uZ2dHS5ycnA4fPvzqq6+GhoYaJzwAMFOG
+5o779+/b2NjQt6voiImJuX37tqBRAYC5MzR3NDU19e7du81Btra2+t9uDwCPHw7HLCKRyHhxAED3
+wuF3loqKCtzzBgAUh9wxePBg7V9ntQ0aNEiYcACgm+DwzMGsrCyjhgIA3QhufgUAPpA7AIAP5A4A
+4AO5AwD4QO4AAD743IPfpsLCwuPHjzc1NY0cOTI0NLT1IwjT0tJKSkq0S+Lj4/GkQoBuSpjckZ2d
+/dFHH23YsMHa2jolJaWkpOSTTz7RGef8+fOOjo5ubm5sCRIHQPclQO7QaDTx8fHbtm2jDyIcPXr0
+pEmTioqKvL29tUeTy+X+/v50HADo7gT4y19cXNzQ0MAmBbFYPHbs2PT0dJ3RVCrVkCFDsrKytm/f
+np2d3fn5AkAXEiB3VFVVubi4aJd4enq2fhrQvXv3IiIiiouL+/Xrd/DgwaCgoNavdHF1dXV1de18
+SABPIBNvPsIcs+jcni8SiVq/pFYikcycOdPT05MQEhISMm/evEOHDi1atEh7HKlU2vl4AJ5MdPMx
+WfoQIHf06tXr8uXL2iX19fWtn4G8adMm7a9Tp04tKirq/NwBoEsIcMzi4+Mjl8srKirYkqKiolGj
+RmmPI5PJzp07p11y//59Kyurzs8dALqEALnD1tZ24cKFW7Zs0Wg0hJCioqKSkpI5c+YQQtLS0ujL
+a9VqdURExMmTJ+kkUqn06NGjQUFBnZ87AHQJYa7vWLVqVVxc3Pjx452dnevr65OSkmxtbQkhRUVF
+OTk5Gzdu7Nu3b0pKSkxMTGJiYp8+fRobGxMSEkaMGCHI3AHA9EQMwwhVl1qtViqV+t/21NLSolKp
+2hzH1dVV+1ypaHWuUIEBPDaYHQH6R9DZjoxHsGvSCSGWlpYdviZOLBbjrdcAjwFcFQ4AfCB3AAAf
+yB0AwAdyBwDwgdwBAHwgdwAAH8gdAMAHcgcA8IHcAQB8IHcAAB/IHQDAB3IHAPCB3AEAfCB3AAAf
+yB0AwAdyBwDwgdwBAHwgdwAAH8gdAMAHcgcA8IHcAQB8IHcAAB/IHQDAB3IHAPCB3AEAfCB3AAAf
+yB0AwAdyBwDwgdwBAHwgdwAAH8gdAMAHcgcA8NHDlDMrLCw8fvx4U1PTyJEjQ0NDLSyQuQC6K9Nt
+vdnZ2e+///5rr70WFBRUXFwcHh5uslkDgOBMtN+h0Wji4+O3bdvm4+NDCBk9evSkSZOKioq8vb1N
+EwAACMtE+x3FxcUNDQ00cRBCxGLx2LFj09PTTTN3ABCcifY7qqqqXFxctEs8PT2///57ndFcXV3Z
+zy5EMH+8fkC4ygC6kvY20rVMd8zSu3dv7RKRSKRWq7VLpFKpaYIB6MZ2mMtmYqJjll69el2+fFm7
+pL6+3tra2jRzBwDBmSh3+Pj4yOXyiooKtqSoqGjUqFGmmTsACM5EucPW1nbhwoVbtmzRaDSEkKKi
+opKSkjlz5phm7gAgOBHDMKaZk1qtjouLO3PmjLOzc319/Y4dO9zd3U0zawAQnOlyB6VWq5VKJc50
+AHR3ps4dAPB4MOn9LHrwvtUlLy8vIyNDLpcPHjx44cKF/fr1018h13JCSGlpaWpq6htvvDF8+HAB
+Ky8rK/v888+rq6vt7e1DQ0OHDh0qYOXffPPNmTNnlErlgAEDFixYMHjw4E5W7uHhUVNTs379ektL
+yw57TU9jtjmoqalpzZo1PXv2bG5uZsu59iynyrn2rJ5BZ86c+eijj4YMGeLp6cm7czkFz7Vz+fVU
+xxgz8MMPP/j7++fk5BQUFISFhS1dutTACVNSUvz9/b/77ruzZ8/++9//9vHxqaqq0lMh13KGYdRq
+9Zw5c6ZNm/bdd9/xq6TN8itXrvj6+qakpPz0008HDx6USCR//PGHUJVHR0cHBQXl5ubevXs3PT3d
+39//xo0bnak8MzNz9OjRLi4uSqWyw17T05htDqqpqZk8ebKLi0tWVhZbzrVnOVXOtWf1DEpLS/Pw
+8HBxcTlz5gzvzuUUPNfO5ddThuj63KFWq8eOHXv+/Hn6ValU+vv7FxYWdjihSqXy8PCgvUK9/fbb
+u3btaq9CruX06+7duw8ePBgWFkbXMKEqDwwMPH78OBv5sWPHLly4IFTlbm5uBQUFbOXr1q07dOgQ
+78qzsrICAgJycnJcXFzy8/P195qexmxz0N69ewMCArQTEy13d3c3vGe5Vk4EkOuyAAAJl0lEQVQn
+MbBn9QzKzMx0c3P7z3/+Q+vn17lcg3d1dTW8c/n1lIG6/i543re6iESipKQkdm+QEOLg4FBXV9de
+hVzLCSFSqTQ3N3fRokUdRsup/NChQ7du3ZoxY4ZcLs/Ly7t9+/bs2bO9vLyEivy55547c+YMLXzw
+4MHly5f/8Y9/8K68vLw8KSlp3LhxhJCMjAx+7dDeJLm5ueHh4QqFgm1hsVj8r3/9y8fHx/Ce5VQ5
+ncTwntUz6Ny5c2KxODQ0tDOdyzX4Xr16Gd65/HrKQF2fO9q81aW2trbDCS0sLLRvw5XJZPn5+ZMn
+T26vQq7lGo1mzZo1W7ZsMSRaTuUVFRXDhg379ttv586de+zYsfnz50dERGg0GqEi37lzZ05OzvTp
+01euXDlr1qzg4GC6z8+v8kWLFg0aNIgOYvuFa23tTeLg4GBhYaFTPmrUKO0D7w57llPlnp6eNTU1
+hvesnkFeXl5ubm465Vw7l2vwLi4uhneunuB5b3esrs8dhtzq0iG5XB4ZGTlhwgRvb+/2KuRavm/f
+vnHjxunceiRI5SqVqq6urqio6MSJE3v27MnOzi4rK0tOThYq8ocPHz711FMDBw7s0aNHXV3duXPn
+ZDJZ5ysnhLD9wrU2/ZP06tWrzUmIYT3LtfKysjLDe5brwnLtXK7BKxQKwzuXa/Cctruu/52l87e6
+lJeXv/vuu35+ftHR0Xoq5FSuUqmOHz9+7NixBw8eEEKUSmVTU9ODBw8Eqdza2vq33347cuQILbGx
+sVm4cCH9YyJI5OHh4V999RXd55fJZEuXLo2Li5s8eXInKyeEsP3CdXn1T3LlypU2JzGwZzlVXlpa
+WlVVFRwcbGDP8lhYTp3LNXipVPrNN98Y2Lk8gicG6/r9jk7e6nL69Ong4ODIyEi6eumpkFO5nZ2d
+m5vbxo0b161bt27dOqlUevjw4bi4OEEqDwgI6NHjf7K2XC63tLQUpPI+ffr861//Yk8W2NnZvfPO
+O/n5+Z2vnBDi6enJr5H1T9LU1KQ9F1pueM9yqjwvL++ZZ54xvGe5LizXzuUUfH5+/pAhQwzvXK7B
+c7vFzPDTqsazdevW8PBwtVrNMExhYaGPj49MJjNkwl27dk2bNu327dsGVsi1nMWejReq8q1bt0ZG
+RjY3NzMMU1FRQX8qE6TygoICHx+fW7du0WhVKtXq1avXrFnTycrz8/NdXFxqa2t5N7KeQZs3b3Zx
+caGtQcu3bNnCqWc5Va7duYb0rP6FXbZsGf0phHfnGh78qFGjvL29OXVuZ1Z7/cziulJ+t7pcvHgx
+KChIpzAwMHDr1q3tVci1nLV48eLAwMApU6bwqKTNcrVa/eGHH3799dd9+/Ztbm5es2bNrFmzhKr8
+xx9/3L59u5WVVf/+/S9fvuzv7x8TE2Nra8uv8rS0NJFIxDCMRqPp27cvIWTMmDEff/wxj8ZsPWj5
+8uVyuZxhmIcPH4pEIgsLi549e8bExKxfv55Tzxpe+eHDh7U715CebW9QQEDAo0eP5HK5Uqm0tLRk
+GMbX1zcpKYlr53IK/t69e5w6tzOrvX5mkTsowW91aa9CruXGq1yj0TQ3N9vY2Bij8paWlpaWlp49
+e+pcLChss/CYqvPt3y0q59q5nOrn2rlcgzeEGeUOAOhGuv5cKQB0R8gdAMBH11/fAVRhYaH2BciU
+u7v7zZs3Bw4c6OTk1CVRGcPVq1efeuop7UvO9dNoNHl5eX5+fniRoFnB+Q5zERERUV9fTwi5cOHC
+888/7+DgQAhZsWJFRERERETE7NmzjTTf48ePq9XquXPnGqn+1pYtW9a3b99NmzYZOH5LS8sLL7xw
+5coVsVhs1MCAE+x3mIvdu3fTD56enu+++y791ZAQkpeXZ9T5FhcXP/XUU6bMHfB4QO4wd8nJyZ6e
+niNGjCCEvP/++2vXrt23b9/t27e9vb2XLFmSl5f35ZdfEkKWLFlCxyGEpKam0tu0hw0btmTJEisr
+K0JIdXX1gQMHysrKrKysRo8eTe/+jIqK+vnnn0Ui0cqVK8PCwtzd3RUKxaFDh3755Re5XG5vb//O
+O+/Q5+IYMuuDBw+OGzcuKyvrt99+c3R0DA8Pf/bZZ/Uv3fvvv79mzZrPP//82rVr/fv3j4qKojtc
+CoVi7969165ds7e3X758ufYkbS5dYWHhDz/8EBsbS5d03759cXFxOMYxKuQOc1dYWDhgwAC6cZ44
+ccLS0nLy5MnW1tarVq1SKpXl5eXr1q37/vvvw8LCCgsLLS0tN2/e/Ntvv23evNnGxiYxMTE6Ovrj
+jz8mhCxYsGD8+PGbNm2qrKxMSEhoaWlZsmTJtGnTqqqqLC0tp0+fPmDAAEJIdHS0QqGIiopydHT8
++uuv33nnHVqtIbMuKCjIzMwMDAx8++23jx07FhIScurUKf0HGidOnJDL5b6+vt7e3hkZGatWrUpN
+TSWEREVFNTc3JyQkPHz48MMPP2THb2/pRo0atX79+sOHD8+fPz8hIcHb2xuJw+gMvwQVTGPkyJHs
+VdLM/1407eHhkZ6eTj9/8sknvr6+9IJiOujs2bO3b992cXH5888/aaFSqXR3d79165ZSqXRxcWGf
+pvPXX3+x1zVHRUWtX7+end0PP/xQU1PDfvX09Dx79qwhs2YYJiQkZNu2bbRQpVJ5eXl9++23rRdw
+6dKl7Bw9PDz27NlDP1dUVLi5uTEMc+PGDTc3N/qgMIZhSkpK6EXf7S0d/VpQUODp6fnVV1/NnTu3
+41aGTsN+RzfTv39/+sHJyUkikbB/XXv37q3RaK5evWphYXHgwP9//65IJJJKpYMHDx4zZsy8efMC
+AgIkEskLL7zAHuDomDhx4okTJ/Ly8pqbm9VqdUtLC32lToezpp8lEgn9YGlpOXr06KKioqlTp+pf
+IjaSPn36aDQatVp9/fr1Pn36sA8o9fDwoB/0LB0hxNfX96WXXvrggw8yMzP1zxEEgdzRjYlEIp2S
+lpYWa2vriRMnsiUTJ06kz6dJTk4+ffr02bNnMzMzP/zww9mzZyckJLSuc9myZXfv3l22bNmzzz7r
+5OT0+uuvGzjr1nr06KFSqTocTfvhyYQQmj7avERaz9JR9vb2Go3m0qVL7MOKwHiQOx4r//d//6dQ
+KHx9fdmzDL/88ku/fv00Gs1ff/01YcKECRMmEEIKCwtDQkI++OADne1WJpPl5OTk5uY6OzsTQjQa
+TUNDA6cAZDIZ+/nOnTuBgYE8lmLAgAFVVVUajYZ95rj+pWM/nzt3bsuWLZs3b/bz86O37YHx/D+3
+as+cPnPTGgAAAABJRU5ErkJggg==
+
+------MultipartBoundary--TJEpq3Y6U5TemU8YoZlTLUSNw5xZgQhdAfbFyQNK5S------
